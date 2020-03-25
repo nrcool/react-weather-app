@@ -11,21 +11,29 @@ function App() {
 
   console.log("key:", process.env.REACT_APP_KEY)
 
-  const fetchData = () => {
-    fetch(`http:/api.openweathermap.org/data/2.5/weather?q=${city}&APPID=9ea0aeab738bca025e8368d4febab564&units=metric`)
+    const fetchData = () => {
+    fetch(`https:/api.openweathermap.org/data/2.5/weather?q=${city}&APPID=9ea0aeab738bca025e8368d4febab564&units=metric`)
       // fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_KEY}&units=metric`)
       .then(res => res.json())
       .then(res1 => {
-        setData(res1);
-        setLoading(true);
-        console.log(res1);
-      })
-      .catch(err => {
-        console.log("err........", err);
-        setErrmessage(err.message);
-        setErr(true);
+       
+        console.log(res1)
+         if(!Object.keys(res1).includes("main")){
+           
+          setErrmessage(res1.message);
+            setErr(true);
+            setLoading(false)  
+            console.log("here")
+            console.log(err,errmessage)
+       
+         }else{
+          setData(res1);
+          setLoading(true)
+          setErr(false);
+         }
       })
   };
+
 
   const getData = (e) => {
     e.preventDefault();
@@ -51,8 +59,7 @@ function App() {
 
       <div className="weather-content">
 
-        {err ? errmessage : (<>
-          Object.keys(data).includes("main") ? <h2>City: {city} </h2>
+        {err ? errmessage : (<><h2>City: {city} </h2>
           <p>Current temperature: {loading ? data.main.temp : null} °C</p>
           <p>Max temperature: {loading ? data.main.temp_max : null} °C</p>
           <p>Min temperature: {loading ? data.main.temp_min : null} °C</p>
